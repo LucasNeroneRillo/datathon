@@ -1,7 +1,8 @@
 ## Setup
 1) Start a virtual environment
 2) Install requirements.txt
-3) Insert 'complete.csv' file in data/ dir
+3) Create an empty results/ folder
+4) Insert 'complete.csv' file in data/ dir
 
 ## Best time to go shopping for the holidays in Des Moines
 - In what days do people usually go shopping?
