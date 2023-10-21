@@ -1,11 +1,5 @@
-from utils import is_big_dataset
-
 RESULTS_ROOT = "results/"
-
 FILE_ROOT = "data/"
-FILENAME = "complete.csv" if is_big_dataset() else "one_sensor.csv"
-FILE_PATH = FILE_ROOT + FILENAME
-LOCATIONS_PATH = FILE_ROOT + "routes_and_locations.csv"
 
 DATA_COLUMNS = [
     'owner-id',  # Data type: object
