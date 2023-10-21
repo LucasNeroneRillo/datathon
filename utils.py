@@ -42,11 +42,3 @@ def get_unique_values(df):
 
 def is_big_dataset():
     return len(sys.argv) > 1 and sys.argv[1] == "big"
-
-# BEST TIMES TO GO SHOPPING
-
-# At what time do people go shopping?
-# When is it cheap to buy?
-# What stores are good each day?
-
-# Only Des Moines
