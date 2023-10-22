@@ -20,10 +20,8 @@ def main():
     df = df[df['lane-count'] != 0]
     df = df[df['status'] == 'OK']
     df = df[df['device-description'] == 'NORMAL']
-    df = df[df['time'] >= 80000]
-    df = df[df['time'] <= 235900]
-    df['month-day-hour'] = df['month'].astype(str) + '-' + df['day'].astype(str) + '-' + df['time'].astype(str).str[:2]
-    df['detector-id'] = df['detector-id'].apply(lambda x: int(re.search(r'\d+', x).group())).astype(str) + df['link-direction']
+    df['month-day-hour'] = df.apply(lambda row: f"{row['month']:02}-{row['day']:02}-{(row['time'] // 10000):02}", axis=1)
+    df['detector-id'] = df['detector-id'].apply(lambda x: int(re.search(r'\d+', x).group())).astype(str)# + df['link-direction']
 
     # Group by hour/detector
     df = df.groupby(['month-day-hour', 'detector-id']).agg({
@@ -32,13 +30,16 @@ def main():
         'lane-speed': lambda x: np.average(x, weights=df.loc[x.index, 'lane-count']),
     }).reset_index()
 
+    # Generate extra columns
+    df['month'] = df['month-day-hour'].apply(lambda x: x.split('-')[0])
+    df['day'] = df['month-day-hour'].apply(lambda x: x.split('-')[1])
+    df['hour'] = df['month-day-hour'].apply(lambda x: x.split('-')[2])
+    df['month-day'] = df['month-day-hour'].apply(lambda x: x.split('-')[0] + '-' + x.split('-')[1])
+    datetimes = pd.to_datetime(df['month-day-hour'], format='%m-%d-%H').apply(lambda x: x.replace(year=2022))
+    df['day-of-week'] = datetimes.dt.strftime('%a')
+
+    # Save results
     filename = "cleaned_data.csv" if is_big_dataset() else "cleaned_data_small.csv"
     df.to_csv(FILE_ROOT + filename)
-
-    #print(df)
-    #print(df.info())
-    #print(df.shape[0])
-
-
 
 main()
