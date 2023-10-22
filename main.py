@@ -17,6 +17,7 @@ def main():
     df = df.drop(columns=columns_to_remove)
     
     # Clean data
+    df = df[df['lane-count'] != 0]
     df = df[df['status'] == 'OK']
     df = df[df['device-description'] == 'NORMAL']
     df = df[df['time'] >= 80000]
@@ -30,6 +31,9 @@ def main():
         'lane-occupancy': lambda x: np.average(x, weights=df.loc[x.index, 'sample-period']),
         'lane-speed': lambda x: np.average(x, weights=df.loc[x.index, 'lane-count']),
     }).reset_index()
+
+    filename = "cleaned_data.csv" if is_big_dataset() else "cleaned_data_small.csv"
+    df.to_csv(FILE_ROOT + filename)
 
     #print(df)
     #print(df.info())
