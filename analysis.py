@@ -13,10 +13,11 @@ df = pd.read_csv(FILE_ROOT + "cleaned_data.csv")
 
 def main():
     o1, o2, o3 = "hour", "day-of-week", "month-day"
-    chosen = o2
+    chosen = o3
 
+    #speed_bar_graph(chosen)
     #occupancy_bar_graph(chosen)
-    traffic_heatmap(chosen)
+    #traffic_heatmap(chosen)
 
 
 def aggregate_by(column_list):
@@ -29,6 +30,19 @@ def aggregate_by(column_list):
 
 def occupancy_bar_graph(time_type):
     aggregate_by([time_type]).plot(kind="bar", x=time_type, y="lane-occupancy")
+
+    # Set the new x-axis ticks with only desired num of ticks
+    if time_type == "month-day":
+        desired_num_ticks = 10
+        current_ticks = plt.xticks()[0]
+        step = len(current_ticks) // (desired_num_ticks - 1)
+        new_ticks = current_ticks[::step]
+        plt.xticks(new_ticks)
+    plt.show()
+
+
+def speed_bar_graph(time_type):
+    aggregate_by([time_type]).plot(kind="bar", x=time_type, y="lane-speed")
 
     # Set the new x-axis ticks with only desired num of ticks
     if time_type == "month-day":
