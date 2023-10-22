@@ -12,12 +12,14 @@ df = pd.read_csv(FILE_ROOT + "cleaned_data.csv")
 
 
 def main():
-    o1, o2, o3 = "hour", "day-of-week", "month-day"
-    chosen = o3
+    x1, x2, x3 = "hour", "day-of-week", "month-day"
+    chosen_x = x1
+    
+    y1, y2 = "lane-occupancy", "lane-occupancy"
+    chosen_y = y1
 
-    #speed_bar_graph(chosen)
-    #occupancy_bar_graph(chosen)
-    #traffic_heatmap(chosen)
+    #bar_graph(chosen_x, chosen_y)
+    heatmap(chosen_x, chosen_y)
 
 
 def aggregate_by(column_list):
@@ -28,11 +30,11 @@ def aggregate_by(column_list):
     }).reset_index()
 
 
-def occupancy_bar_graph(time_type):
-    aggregate_by([time_type]).plot(kind="bar", x=time_type, y="lane-occupancy")
+def bar_graph(chosen_x, chosen_y):
+    aggregate_by([chosen_x]).plot(kind="bar", x=chosen_x, y=chosen_y)
 
     # Set the new x-axis ticks with only desired num of ticks
-    if time_type == "month-day":
+    if chosen_x == "month-day":
         desired_num_ticks = 10
         current_ticks = plt.xticks()[0]
         step = len(current_ticks) // (desired_num_ticks - 1)
@@ -41,35 +43,22 @@ def occupancy_bar_graph(time_type):
     plt.show()
 
 
-def speed_bar_graph(time_type):
-    aggregate_by([time_type]).plot(kind="bar", x=time_type, y="lane-speed")
-
-    # Set the new x-axis ticks with only desired num of ticks
-    if time_type == "month-day":
-        desired_num_ticks = 10
-        current_ticks = plt.xticks()[0]
-        step = len(current_ticks) // (desired_num_ticks - 1)
-        new_ticks = current_ticks[::step]
-        plt.xticks(new_ticks)
-    plt.show()
-
-
-def traffic_heatmap(time_type):
+def heatmap(chosen_x, chosen_y):
     # One row for each combination of detector id and day
     df2 = df.copy()
-    df2 = aggregate_by(['detector-id', time_type])
+    df2 = aggregate_by(['detector-id', chosen_x])
     
     # Filter detectors that do not have data for every day
     counts = df2['detector-id'].value_counts()
     max_frequency = counts.max()
     max_frequency_ids = counts[counts == max_frequency].index.tolist()
     df2 = df2[df2['detector-id'].isin(max_frequency_ids)]
-    pivot_df = df2.pivot(index='detector-id', columns=time_type, values='lane-speed')
+    pivot_df = df2.pivot(index='detector-id', columns=chosen_x, values=chosen_y)
     
     # Create heatmap
     plt.figure(figsize=(30, 8))
     sns.heatmap(pivot_df, cmap='RdYlGn', annot=False, fmt=".1f", linewidths=0.5)
-    plt.title('Lane Speed Heatmap')
+    plt.title(f'{chosen_y} heatmap')
     plt.ylabel('Detector ID')
     plt.show()
 
