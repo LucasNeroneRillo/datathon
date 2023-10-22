@@ -15,7 +15,7 @@ def main():
     x1, x2, x3 = "hour", "day-of-week", "month-day"
     chosen_x = x1
     
-    y1, y2 = "lane-occupancy", "lane-occupancy"
+    y1, y2 = "lane-speed", "lane-occupancy"
     chosen_y = y1
 
     #bar_graph(chosen_x, chosen_y)
